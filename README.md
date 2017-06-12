@@ -8,7 +8,7 @@ Given we have a client that needs to make a HTTP GET request to a provider servi
 
 The consumer client is quite simple and looks like this
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/consumer.js:*
+*consumer/consumer.js:*
 
 ```js
 request
@@ -21,7 +21,7 @@ request
 
 and the express provider resource
 
-*/Users/mfellows/development/public/pact-workshop-js/provider/provider.js:*
+*provider/provider.js:*
 
 ```js
 server.get('/provider/:', (req, res) => {
@@ -58,7 +58,7 @@ $ node consumer/consumer.js
 
 Now lets separate the API client (collaborator) that uses the data it gets back from the provider into its own module. Here is the updated client method that uses the returned data:
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/client.js:*
+*consumer/client.js:*
 
 ```js
 const fetchProviderData = () => {
@@ -76,7 +76,7 @@ const fetchProviderData = () => {
 
 The consumer is now a lot simpler:
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/consumer.js:*
+*consumer/consumer.js:*
 
 ```js
 const client = require('./client')
@@ -86,7 +86,7 @@ client.fetchProviderData().then(response => console.log(response))
 
 Let's now test our updated client.
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/test/consumer.spec.js:*
+*consumer/test/consumer.spec.js:*
 
 ```js
 describe('Consumer', () => {
@@ -145,7 +145,7 @@ trying to use `date`, which will blow up when run for real even with the tests a
 
 Let us add Pact to the project and write a consumer pact test.
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/test/consumerPact.spec.js:*
+*consumer/test/consumerPact.spec.js:*
 
 ```js
 const provider = pact({
@@ -296,7 +296,7 @@ Animal Profile Service listening on http://localhost:8081
   1 failing
 
   1) Pact Verification should validate the expectations of Our Little Consumer:
-     Error: Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+     Error: Reading pact at pacts/our_little_consumer-our_provider.json
 
 Verifying a pact between Our Little Consumer and Our Provider
   A request for json data
@@ -406,7 +406,7 @@ Now the test passes. But we still have a problem with the date format, which we 
 ```console
 $ node consumer/consumer.js
 Error: Invalid date format in response
-    at request.get.query.then (/Users/mfellows/development/public/pact-workshop-js/consumer/client.js:20:15)
+    at request.get.query.then (consumer/client.js:20:15)
     at process._tickCallback (internal/process/next_tick.js:103:7)
 ```
 
@@ -457,7 +457,7 @@ $ npm run test:pact:provider
 Animal Profile Service listening on http://localhost:8081
   Pact Verification
 Pact Verification Complete!
-Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+Reading pact at pacts/our_little_consumer-our_provider.json
 
 Verifying a pact between Our Little Consumer and Our Provider
   A request for json data
@@ -491,7 +491,7 @@ In this step we are going to add a test for the case where the query parameter i
 
 Here are the two additional tests:
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/test/consumerPact.spec.js:*
+*consumer/test/consumerPact.spec.js:*
 
 ```groovy
 describe('and an invalid date is provided', () => {
@@ -617,7 +617,7 @@ Animal Profile Service listening on http://localhost:8081
   1 failing
 
   1) Pact Verification should validate the expectations of Our Little Consumer:
-     Error: Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+     Error: Reading pact at pacts/our_little_consumer-our_provider.json
 
 Verifying a pact between Our Little Consumer and Our Provider
   A request for json data
