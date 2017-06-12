@@ -15,15 +15,22 @@ server.use((req, res, next) => {
 
 // Get all animals
 server.get('/provider', (req, res) => {
-  const date = req.query.validDate
+  const validDate = req.query.validDate
+  const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/
 
-  res.json(
-    {
+  if (!validDate) {
+    res.status(400)
+    res.json({error: 'validDate is required'});
+  } else if (!moment(validDate, moment.ISO_8601).isValid()) {
+    res.status(400)
+    res.json({error: `'${validDate}' is not a date`})
+  }  else {
+    res.json({
       'test': 'NO',
       'validDate': moment(new Date(), moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ'),
       'count': 100
-    }
-  )
+    })
+  }
 })
 
 module.exports = {

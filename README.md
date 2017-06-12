@@ -696,3 +696,35 @@ Failures:
 ```
 
 Time to update the providers to handle these cases.
+
+
+## Step 10 - Update the providers to handle the missing/invalid query parameters
+
+Let's fix our provider so it generate the correct responses for the query parameters.
+
+
+The API resource gets updated to check if the parameter has been passed, and handle a date parse Error
+if it is invalid. Two new Errors are thrown for these cases.
+
+```js
+server.get('/provider', (req, res) => {
+  const validDate = req.query.validDate
+  const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/
+
+  if (!validDate) {
+    res.status(400)
+    res.json({error: 'validDate is required'});
+  } else if (!moment(validDate, moment.ISO_8601).isValid()) {
+    res.status(400)
+    res.json({error: `'${validDate}' is not a date`})
+  }  else {
+    res.json({
+      'test': 'NO',
+      'validDate': moment(new Date(), moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ'),
+      'count': 100
+    })
+  }
+})
+```
+
+Now running the `npm run test:pact:provider` will pass.
