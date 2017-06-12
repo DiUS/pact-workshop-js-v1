@@ -4,10 +4,10 @@ const API_PORT = process.env.API_PORT || 8080
 const API_ENDPOINT = `${API_HOST}:${API_PORT}`
 
 // Fetch provider data
-const fetchProviderData = () => {
+const fetchProviderData = (submissionDate) => {
   return request
     .get(`${API_ENDPOINT}/provider`)
-    .query({validDate: new Date().toISOString()})
+    .query({validDate: submissionDate})
     .then((res) => {
       return {
         count: res.body.count,
