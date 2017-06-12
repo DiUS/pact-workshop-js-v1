@@ -484,3 +484,108 @@ Our consumer also now works:
 $ node consumer/consumer.js
 { count: 100, date: '2017-06-12T20:40:51+10:00' }
 ```
+
+## Step 8 - Test for the missing query parameter
+
+In this step we are going to add a test for the case where the query parameter is missing or invalid. We do this by adding additional tests and expectations to the consumer pact test. Our client code needs to be modified slightly to be able to pass invalid dates in, and if the date parameter is null, don't include it in the request.
+
+Here are the two additional tests:
+
+*/Users/mfellows/development/public/pact-workshop-js/consumer/test/consumerPact.spec.js:*
+
+```groovy
+describe('and an invalid date is provided', () => {
+  before(() => {
+    return provider.addInteraction({
+      uponReceiving: 'a request with an invalid date parameter',
+      withRequest: {
+        method: 'GET',
+        path: '/provider',
+        query: {
+          validDate: 'This is not a date'
+        }
+      },
+      willRespondWith: {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        body: '"\'This is not a date\' is not a date"'
+      }
+    })
+  })
+
+  it('can handle an invalid date parameter', (done) => {
+    expect(fetchProviderData('This is not a date')).to.eventually.be.rejectedWith(Error).notify(done)
+  })
+
+  it('should validate the interactions and create a contract', () => {
+    return provider.verify()
+  })
+})
+
+describe('and no date is provided', () => {
+  before(() => {
+    return provider.addInteraction({
+      uponReceiving: 'a request with a missing date parameter',
+      withRequest: {
+        method: 'GET',
+        path: '/provider',
+      },
+      willRespondWith: {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8'
+        },
+        body: '"validDate is required"'
+      }
+    })
+  })
+
+  it('can handle missing date parameter', (done) => {
+    expect(fetchProviderData(null)).to.eventually.be.rejectedWith(Error).notify(done)
+  })
+
+  it('should validate the interactions and create a contract', () => {
+    return provider.verify()
+  })
+})
+```
+
+After running our specs, the pact file will have 2 new interactions.
+
+*pacts/our_little_consumer-our_provider.json*:
+
+```json
+[
+    {
+      "description": "a request with an invalid date parameter",
+      "request": {
+        "method": "GET",
+        "path": "/provider",
+        "query": "validDate=This+is+not+a+date"
+      },
+      "response": {
+        "status": 400,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": "\"'This is not a date' is not a date\""
+      }
+    },
+    {
+      "description": "a request with a missing date parameter",
+      "request": {
+        "method": "GET",
+        "path": "/provider"
+      },
+      "response": {
+        "status": 400,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": "\"validDate is required\""
+      }
+    }
+  ]
+```

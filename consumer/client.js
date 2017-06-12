@@ -6,12 +6,18 @@ const API_ENDPOINT = `${API_HOST}:${API_PORT}`
 
 // Fetch provider data
 const fetchProviderData = (submissionDate) => {
+  let withDate = {}
+  const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/
+
+  if (submissionDate) {
+    withDate = {validDate: submissionDate}
+  }
+
   return request
     .get(`${API_ENDPOINT}/provider`)
-    .query({validDate: submissionDate})
+    .query(withDate)
     .then((res) => {
-      // Validate date
-      if (res.body.validDate.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/)) {
+      if (res.body.validDate.match(dateRegex)) {
         return {
           count: res.body.count,
           date: moment(res.body.validDate, moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ')
@@ -19,6 +25,8 @@ const fetchProviderData = (submissionDate) => {
       } else {
         throw new Error('Invalid date format in response')
       }
+    }, (err) => {
+        throw new Error(`Error from response: ${err.body}`)
     })
 }
 

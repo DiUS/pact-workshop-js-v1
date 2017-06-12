@@ -29,44 +29,102 @@ const submissionDate = new Date().toISOString()
 const { somethingLike: like, term } = pact.Matchers
 
 describe('Pact with Our Provider', () => {
+  before(() => {
+    return provider.setup()
+  })
+
   describe('given data count > 0', () => {
     describe('when a call to the Provider is made', () => {
-      before(() => {
-        return provider.setup()
-          .then(() => {
-            provider.addInteraction({
-              uponReceiving: 'a request for JSON data',
-              withRequest: {
-                method: 'GET',
-                path: '/provider',
-                query: {
-                  validDate: submissionDate
-                }
+      describe('and a valid date is provided', () => {
+        before(() => {
+          return provider.addInteraction({
+            uponReceiving: 'a request for JSON data',
+            withRequest: {
+              method: 'GET',
+              path: '/provider',
+              query: { validDate: submissionDate }
+            },
+            willRespondWith: {
+              status: 200,
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8'
               },
-              willRespondWith: {
-                status: 200,
-                headers: {
-                  'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: {
-                  test: 'NO',
-                  validDate: term({generate: date, matcher: '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}'}),
-                  count: like(100)
-                }
+              body: {
+                test: 'NO',
+                validDate: term({generate: date, matcher: '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}'}),
+                count: like(100)
               }
-            })
+            }
           })
+        })
+
+        it('can process the JSON payload from the provider', done => {
+          const response = fetchProviderData(submissionDate)
+
+          expect(response).to.eventually.have.property('count', 100)
+          expect(response).to.eventually.have.property('date', date).notify(done)
+        })
+
+        it('should validate the interactions and create a contract', () => {
+          return provider.verify()
+        })
       })
 
-      it('can process the JSON payload from the provider', done => {
-        const response = fetchProviderData(submissionDate)
+      describe('and an invalid date is provided', () => {
+        before(() => {
+          return provider.addInteraction({
+            uponReceiving: 'a request with an invalid date parameter',
+            withRequest: {
+              method: 'GET',
+              path: '/provider',
+              query: {
+                validDate: 'This is not a date'
+              }
+            },
+            willRespondWith: {
+              status: 400,
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+              },
+              body: '"\'This is not a date\' is not a date"'
+            }
+          })
+        })
 
-        expect(response).to.eventually.have.property('count', 100)
-        expect(response).to.eventually.have.property('date', date).notify(done)
+        it('can handle an invalid date parameter', (done) => {
+          expect(fetchProviderData('This is not a date')).to.eventually.be.rejectedWith(Error).notify(done)
+        })
+
+        it('should validate the interactions and create a contract', () => {
+          return provider.verify()
+        })
       })
 
-      it('should validate the interactions and create a contract', () => {
-        return provider.verify()
+      describe('and no date is provided', () => {
+        before(() => {
+          return provider.addInteraction({
+            uponReceiving: 'a request with a missing date parameter',
+            withRequest: {
+              method: 'GET',
+              path: '/provider',
+            },
+            willRespondWith: {
+              status: 400,
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+              },
+              body: '"validDate is required"'
+            }
+          })
+        })
+
+        it('can handle missing date parameter', (done) => {
+          expect(fetchProviderData(null)).to.eventually.be.rejectedWith(Error).notify(done)
+        })
+
+        it('should validate the interactions and create a contract', () => {
+          return provider.verify()
+        })
       })
     })
 
