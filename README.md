@@ -8,7 +8,7 @@ Given we have a client that needs to make a HTTP GET request to a provider servi
 
 The consumer client is quite simple and looks like this
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/consumer.js:*
+*consumer/consumer.js:*
 
 ```js
 request
@@ -21,7 +21,7 @@ request
 
 and the express provider resource
 
-*/Users/mfellows/development/public/pact-workshop-js/provider/provider.js:*
+*provider/provider.js:*
 
 ```js
 server.get('/provider/:', (req, res) => {
@@ -58,7 +58,7 @@ $ node consumer/consumer.js
 
 Now lets separate the API client (collaborator) that uses the data it gets back from the provider into its own module. Here is the updated client method that uses the returned data:
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/client.js:*
+*consumer/client.js:*
 
 ```js
 const fetchProviderData = () => {
@@ -76,7 +76,7 @@ const fetchProviderData = () => {
 
 The consumer is now a lot simpler:
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/consumer.js:*
+*consumer/consumer.js:*
 
 ```js
 const client = require('./client')
@@ -86,7 +86,7 @@ client.fetchProviderData().then(response => console.log(response))
 
 Let's now test our updated client.
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/test/consumer.spec.js:*
+*consumer/test/consumer.spec.js:*
 
 ```js
 describe('Consumer', () => {
