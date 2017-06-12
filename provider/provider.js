@@ -13,7 +13,10 @@ server.use((req, res, next) => {
   next()
 })
 
-// Get all animals
+const dataStore = {
+  count: 1000
+}
+
 server.get('/provider', (req, res) => {
   const validDate = req.query.validDate
   const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/
@@ -25,14 +28,20 @@ server.get('/provider', (req, res) => {
     res.status(400)
     res.json({error: `'${validDate}' is not a date`})
   }  else {
-    res.json({
-      'test': 'NO',
-      'validDate': moment(new Date(), moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ'),
-      'count': 100
-    })
+    if (dataStore.count > 0) {
+      res.json({
+        'test': 'NO',
+        'validDate': moment(new Date(), moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ'),
+        'count': dataStore.count
+      })
+    } else {
+      res.status(404)
+      res.send()
+    }
   }
 })
 
 module.exports = {
-  server
+  server,
+  dataStore
 }

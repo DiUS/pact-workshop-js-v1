@@ -149,11 +149,6 @@ describe('Pact with Our Provider', () => {
               status: 404,
               headers: {
                 'Content-Type': 'application/json; charset=utf-8'
-              },
-              body: {
-                test: 'NO',
-                validDate: term({generate: date, matcher: dateRegex}),
-                count: like(100)
               }
             }
           })

@@ -8,7 +8,7 @@ Given we have a client that needs to make a HTTP GET request to a provider servi
 
 The consumer client is quite simple and looks like this
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/consumer.js:*
+*consumer/consumer.js:*
 
 ```js
 request
@@ -21,7 +21,7 @@ request
 
 and the express provider resource
 
-*/Users/mfellows/development/public/pact-workshop-js/provider/provider.js:*
+*provider/provider.js:*
 
 ```js
 server.get('/provider/:', (req, res) => {
@@ -58,7 +58,7 @@ $ node consumer/consumer.js
 
 Now lets separate the API client (collaborator) that uses the data it gets back from the provider into its own module. Here is the updated client method that uses the returned data:
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/client.js:*
+*consumer/client.js:*
 
 ```js
 const fetchProviderData = () => {
@@ -76,7 +76,7 @@ const fetchProviderData = () => {
 
 The consumer is now a lot simpler:
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/consumer.js:*
+*consumer/consumer.js:*
 
 ```js
 const client = require('./client')
@@ -86,7 +86,7 @@ client.fetchProviderData().then(response => console.log(response))
 
 Let's now test our updated client.
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/test/consumer.spec.js:*
+*consumer/test/consumer.spec.js:*
 
 ```js
 describe('Consumer', () => {
@@ -145,7 +145,7 @@ trying to use `date`, which will blow up when run for real even with the tests a
 
 Let us add Pact to the project and write a consumer pact test.
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/test/consumerPact.spec.js:*
+*consumer/test/consumerPact.spec.js:*
 
 ```js
 const provider = pact({
@@ -296,7 +296,7 @@ Animal Profile Service listening on http://localhost:8081
   1 failing
 
   1) Pact Verification should validate the expectations of Our Little Consumer:
-     Error: Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+     Error: Reading pact at pacts/our_little_consumer-our_provider.json
 
 Verifying a pact between Our Little Consumer and Our Provider
   A request for json data
@@ -406,7 +406,7 @@ Now the test passes. But we still have a problem with the date format, which we 
 ```console
 $ node consumer/consumer.js
 Error: Invalid date format in response
-    at request.get.query.then (/Users/mfellows/development/public/pact-workshop-js/consumer/client.js:20:15)
+    at request.get.query.then (consumer/client.js:20:15)
     at process._tickCallback (internal/process/next_tick.js:103:7)
 ```
 
@@ -457,7 +457,7 @@ $ npm run test:pact:provider
 Animal Profile Service listening on http://localhost:8081
   Pact Verification
 Pact Verification Complete!
-Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+Reading pact at pacts/our_little_consumer-our_provider.json
 
 Verifying a pact between Our Little Consumer and Our Provider
   A request for json data
@@ -491,7 +491,7 @@ In this step we are going to add a test for the case where the query parameter i
 
 Here are the two additional tests:
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/test/consumerPact.spec.js:*
+*consumer/test/consumerPact.spec.js:*
 
 ```groovy
 describe('and an invalid date is provided', () => {
@@ -617,7 +617,7 @@ Animal Profile Service listening on http://localhost:8081
   1 failing
 
   1) Pact Verification should validate the expectations of Our Little Consumer:
-     Error: Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+     Error: Reading pact at pacts/our_little_consumer-our_provider.json
 
 Verifying a pact between Our Little Consumer and Our Provider
   A request for json data
@@ -736,7 +736,7 @@ $ npm run test:pact:provider
 Animal Profile Service listening on http://localhost:8081
   Pact Verification
 Pact Verification Complete!
-Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+Reading pact at pacts/our_little_consumer-our_provider.json
 
 Verifying a pact between Our Little Consumer and Our Provider
   A request for json data
@@ -838,3 +838,149 @@ This adds a new interaction to the pact file:
 ```
 
 Your provider side verification will fail as it is not yet aware of these new 'states'.
+
+## Step 12 - provider states for the providers
+
+To be able to verify our providers, we need to be able to change the data that the provider returns. To do this, we need to instrument the running API with a couple of [diagnostic endpoints](https://github.com/pact-foundation/pact-js#api-with-provider-states) to modify the data available to the API at runtime.
+
+For our case, we are just going to use an in memory object to act as our persistence layer, but in a real project you would probably use a database.
+
+_NOTE_: We are in the process of [removing](https://github.com/pact-foundation/pact-node/pull/40) the `providerStatesUrl` property which will simplify this process. Here is our data store:
+
+```js
+const dataStore = {
+  count: 1000
+}
+```
+
+Next, we update our API to use the value from the data store, and throw a 404 if there is no data.
+
+```js
+server.get('/provider', (req, res) => {
+  const validDate = req.query.validDate
+  const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/
+
+  if (!validDate) {
+    res.status(400)
+    res.json({error: 'validDate is required'});
+  } else if (!moment(validDate, moment.ISO_8601).isValid()) {
+    res.status(400)
+    res.json({error: `'${validDate}' is not a date`})
+  }  else {
+    if (dataStore.count > 0) {
+      res.json({
+        'test': 'NO',
+        'validDate': moment(new Date(), moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ'),
+        'count': dataStore.count
+      })
+    } else {
+      res.status(404)
+      res.send()
+    }
+  }
+})
+```
+
+Now we can change the data store value in our test based on the provider state to vary its behaviour.
+
+Next we need to add two endpoints to be able to manipulate this data store:
+
+1. `/states` to return the list of available provider states
+1. `/setup` to allow the Pact verification process to notify the API to switch to the new state
+
+We do this by instrumenting the API in the _test code only_:
+
+*provider/test/providerPact.spec.js*
+
+```js
+const { server, dataStore } = require('../provider.js')
+
+server.get('/states', (req, res) => {
+  res.json({
+    "Our Little Provider": ['date count == 0', 'date count > 0']
+  })
+})
+
+// Set the current state
+server.post('/setup', (req, res) => {
+  switch (req.body.state) {
+    case 'data count == 0':
+      dataStore.count = 0
+      break
+    default:
+      dataStore.count = 1000
+  }
+
+  res.end()
+})
+```
+
+Lastly, we need to update our Pact configuration so that in knows how to find these new endpoits:
+
+```js
+let opts = {
+  provider: 'Our Provider',
+  providerBaseUrl: 'http://localhost:8081',
+  providerStatesUrl: 'http://localhost:8081/states',
+  providerStatesSetupUrl: 'http://localhost:8081/setup',
+  pactUrls: [path.resolve(process.cwd(), './pacts/our_little_consumer-our_provider.json')]
+}
+```
+
+Running the pact verification now passes:
+
+```console
+$ npm run test:pact:provider
+
+> pact-workshop-js@1.0.0 test:pact:provider /Users/mfellows/development/public/pact-workshop-js
+> mocha provider/test/providerPact.spec.js
+
+
+
+Animal Profile Service listening on http://localhost:8081
+  Pact Verification
+Pact Verification Complete!
+Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+
+Verifying a pact between Our Little Consumer and Our Provider
+  Given date count > 0
+    a request for JSON data
+      with GET /provider?validDate=2017-06-12T13%3A14%3A49.745Z
+        returns a response which
+          has status code 200
+          has a matching body
+          includes headers
+            "Content-Type" with value "application/json; charset=utf-8"
+  Given date count > 0
+    a request with an invalid date parameter
+      with GET /provider?validDate=This+is+not+a+date
+        returns a response which
+          has status code 400
+          has a matching body
+          includes headers
+            "Content-Type" with value "application/json; charset=utf-8"
+  Given date count > 0
+    a request with a missing date parameter
+      with GET /provider
+        returns a response which
+          has status code 400
+          has a matching body
+          includes headers
+            "Content-Type" with value "application/json; charset=utf-8"
+  Given date count == 0
+    a request for JSON data
+      with GET /provider?validDate=2017-06-12T13%3A14%3A49.745Z
+        returns a response which
+          has status code 404
+          includes headers
+            "Content-Type" with value "application/json; charset=utf-8"
+
+4 interactions, 0 failures
+
+
+
+    ✓ should validate the expectations of Our Little Consumer (562ms)
+
+
+  1 passing (567ms)
+```
