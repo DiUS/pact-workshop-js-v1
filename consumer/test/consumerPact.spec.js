@@ -24,11 +24,9 @@ const provider = pact({
 })
 const date = '2013-08-16T15:31:20+10:00'
 const submissionDate = new Date().toISOString()
-const expectedBody = {
-  test: 'NO',
-  date: date,
-  count: 1000
-}
+
+// Alias flexible matchers for simplicity
+const { somethingLike: like, term } = pact.Matchers
 
 describe('Pact with Our Provider', () => {
   describe('given data count > 0', () => {
@@ -50,7 +48,11 @@ describe('Pact with Our Provider', () => {
                 headers: {
                   'Content-Type': 'application/json; charset=utf-8'
                 },
-                body: expectedBody
+                body: {
+                  test: 'NO',
+                  validDate: term({generate: date, matcher: '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}'}),
+                  count: like(100)
+                }
               }
             })
           })
@@ -59,7 +61,7 @@ describe('Pact with Our Provider', () => {
       it('can process the JSON payload from the provider', done => {
         const response = fetchProviderData(submissionDate)
 
-        expect(response).to.eventually.have.property('count', 1000)
+        expect(response).to.eventually.have.property('count', 100)
         expect(response).to.eventually.have.property('date', date).notify(done)
       })
 

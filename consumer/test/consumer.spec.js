@@ -20,7 +20,7 @@ describe('Consumer', () => {
         .query({validDate: /.*/})
         .reply(200, {
           test: 'NO',
-          date: date,
+          validDate: date,
           count: 1000
         })
 
