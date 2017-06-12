@@ -770,3 +770,71 @@ Verifying a pact between Our Little Consumer and Our Provider
 
   1 passing (566ms)
 ```
+
+## Step 11 - Provider states
+
+We have one final thing to test for. If the provider ever returns a count of zero, we will get a division by
+zero error in our client. This is an important bit of information to add to our contract. Let us start with a
+consumer test for this.
+
+```js
+  describe('given data count == 0', () => {
+    describe('when a call to the Provider is made', () => {
+      describe('and a valid date is provided', () => {
+        before(() => {
+          return provider.addInteraction({
+            state: 'date count == 0',
+            uponReceiving: 'a request for JSON data',
+            withRequest: {
+              method: 'GET',
+              path: '/provider',
+              query: { validDate: submissionDate }
+            },
+            willRespondWith: {
+              status: 404,
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+              },
+              body: {
+                test: 'NO',
+                validDate: term({generate: date, matcher: dateRegex}),
+                count: like(100)
+              }
+            }
+          })
+        })
+
+        it('can handle missing data', (done) => {
+          expect(fetchProviderData(submissionDate)).to.eventually.be.rejectedWith(Error).notify(done)
+        })
+
+        it('should validate the interactions and create a contract', () => {
+          return provider.verify()
+        })
+      })
+    })
+  })
+```
+
+It is important to take note of the `state` property of the Interaction. There are two states: `"data count > 0"` and `"data count == 0"`. This is how we tell the provider during verification that it should prepare itself into a particular state, so as to illicit the response we are expecting.
+
+This adds a new interaction to the pact file:
+
+```json
+
+  {
+      "description": "a request for JSON data",
+      "request": {
+          "method": "GET",
+          "path": "/provider.json",
+          "query": "validDate=2017-05-22T13%3A34%3A41.515"
+      },
+      "response": {
+          "status": 404
+      },
+      "providerState": "data count == 0"
+  }
+
+```
+
+Your provider side verification will fail as it is not yet aware of these new 'states'.

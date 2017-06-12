@@ -24,6 +24,7 @@ const provider = pact({
 })
 const date = '2013-08-16T15:31:20+10:00'
 const submissionDate = new Date().toISOString()
+const dateRegex = '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}'
 
 // Alias flexible matchers for simplicity
 const { somethingLike: like, term } = pact.Matchers
@@ -38,6 +39,7 @@ describe('Pact with Our Provider', () => {
       describe('and a valid date is provided', () => {
         before(() => {
           return provider.addInteraction({
+            state: 'date count > 0',
             uponReceiving: 'a request for JSON data',
             withRequest: {
               method: 'GET',
@@ -51,7 +53,7 @@ describe('Pact with Our Provider', () => {
               },
               body: {
                 test: 'NO',
-                validDate: term({generate: date, matcher: '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}'}),
+                validDate: term({generate: date, matcher: dateRegex}),
                 count: like(100)
               }
             }
@@ -73,6 +75,7 @@ describe('Pact with Our Provider', () => {
       describe('and an invalid date is provided', () => {
         before(() => {
           return provider.addInteraction({
+            state: 'date count > 0',
             uponReceiving: 'a request with an invalid date parameter',
             withRequest: {
               method: 'GET',
@@ -103,6 +106,7 @@ describe('Pact with Our Provider', () => {
       describe('and no date is provided', () => {
         before(() => {
           return provider.addInteraction({
+            state: 'date count > 0',
             uponReceiving: 'a request with a missing date parameter',
             withRequest: {
               method: 'GET',
@@ -127,10 +131,47 @@ describe('Pact with Our Provider', () => {
         })
       })
     })
+  })
 
-    // Write pact files to file
-    after(() => {
-      return provider.finalize()
+  describe('given data count == 0', () => {
+    describe('when a call to the Provider is made', () => {
+      describe('and a valid date is provided', () => {
+        before(() => {
+          return provider.addInteraction({
+            state: 'date count == 0',
+            uponReceiving: 'a request for JSON data',
+            withRequest: {
+              method: 'GET',
+              path: '/provider',
+              query: { validDate: submissionDate }
+            },
+            willRespondWith: {
+              status: 404,
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8'
+              },
+              body: {
+                test: 'NO',
+                validDate: term({generate: date, matcher: dateRegex}),
+                count: like(100)
+              }
+            }
+          })
+        })
+
+        it('can handle missing data', (done) => {
+          expect(fetchProviderData(submissionDate)).to.eventually.be.rejectedWith(Error).notify(done)
+        })
+
+        it('should validate the interactions and create a contract', () => {
+          return provider.verify()
+        })
+      })
     })
+  })
+
+  // Write pact files to file
+  after(() => {
+    return provider.finalize()
   })
 })
