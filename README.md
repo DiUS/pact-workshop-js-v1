@@ -335,3 +335,78 @@ Secondly, and more importantly, the consumer was expecting a `date` field while 
 # Step 5
 
 Intentionally blank to align with the [JVM workshop](https://github.com/DiUS/pact-workshop-jvm/) steps
+
+## Step 6 - Back to the client we go
+
+Let's correct the consumer test to handle any integer for `count` and use the correct field for the `date`. Then we need to add a type matcher for `count` and change the field for the date to be `validDate`.
+
+We can also add a date regular expression to make sure the `validDate` field is a valid date. This is important because we are parsing it.
+
+The updated consumer test is now:
+
+```js
+const { somethingLike: like, term } = pact.Matchers
+
+describe('Pact with Our Provider', () => {
+  describe('given data count > 0', () => {
+    describe('when a call to the Provider is made', () => {
+      before(() => {
+        return provider.setup()
+          .then(() => {
+            provider.addInteraction({
+              uponReceiving: 'a request for JSON data',
+              withRequest: {
+                method: 'GET',
+                path: '/provider',
+                query: {
+                  validDate: submissionDate
+                }
+              },
+              willRespondWith: {
+                status: 200,
+                headers: {
+                  'Content-Type': 'application/json; charset=utf-8'
+                },
+                body: {
+                  test: 'NO',
+                  validDate: term({generate: date, matcher: '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}'}),
+                  count: like(100)
+                }
+              }
+            })
+          })
+      })
+...
+})
+```
+
+Running this test will fail until we fix the client. Here is the correct client function, which parses the date and formats it correctly:
+
+```js
+const fetchProviderData = (submissionDate) => {
+  return request
+    .get(`${API_ENDPOINT}/provider`)
+    .query({validDate: submissionDate})
+    .then((res) => {
+      // Validate date
+      if (res.body.validDate.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/)) {
+        return {
+          count: res.body.count,
+          date: moment(res.body.validDate, moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ')
+        }
+      } else {
+        throw new Error('Invalid date format in response')
+      }
+    })
+}
+```
+
+Now the test passes. But we still have a problem with the date format, which we must fix in the provider. Running the client now fails because of that.
+
+```console
+$ node consumer/consumer.js
+Error: Invalid date format in response
+    at request.get.query.then (/Users/mfellows/development/public/pact-workshop-js/consumer/client.js:20:15)
+    at process._tickCallback (internal/process/next_tick.js:103:7)
+```
+
