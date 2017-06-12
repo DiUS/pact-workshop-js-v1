@@ -728,3 +728,49 @@ server.get('/provider', (req, res) => {
 ```
 
 Now running the `npm run test:pact:provider` will pass.
+
+```console
+$ npm run test:pact:provider
+
+> pact-workshop-js@1.0.0 test:pact:provider /Users/mfellows/development/public/pact-workshop-js
+> mocha provider/test/providerPact.spec.js
+
+
+
+Animal Profile Service listening on http://localhost:8081
+  Pact Verification
+Pact Verification Complete!
+Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+
+Verifying a pact between Our Little Consumer and Our Provider
+  A request for json data
+    with GET /provider?validDate=2017-06-12T12%3A35%3A19.522Z
+      returns a response which
+        has status code 200
+        has a matching body
+        includes headers
+          "Content-Type" with value "application/json; charset=utf-8"
+  A request with an invalid date parameter
+    with GET /provider?validDate=This+is+not+a+date
+      returns a response which
+        has status code 400
+        has a matching body
+        includes headers
+          "Content-Type" with value "application/json; charset=utf-8"
+  A request with a missing date parameter
+    with GET /provider
+      returns a response which
+        has status code 400
+        has a matching body
+        includes headers
+          "Content-Type" with value "application/json; charset=utf-8"
+
+3 interactions, 0 failures
+
+
+
+    ✓ should validate the expectations of Our Little Consumer (560ms)
+
+
+  1 passing (566ms)
+```
