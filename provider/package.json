@@ -1,0 +1,28 @@
+{
+  "name": "provider",
+  "version": "1.0.0",
+  "description": "Pact test Provider",
+  "main": "provider.js",
+  "scripts": {
+    "test": "npm run pact:consumer"
+  },
+  "author": "Matt Fellows <m@onegeek.com.au>",
+  "license": "Apache-2.0",
+  "standard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "config/**",
+      "test/**",
+      "dist/**",
+      "docs/**",
+      "examples/**"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DiUS/pact-workshop-js"
+  },
+  "engines": {
+    "node": ">=4"
+  }  
+}
