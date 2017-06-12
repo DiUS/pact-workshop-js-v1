@@ -589,3 +589,106 @@ After running our specs, the pact file will have 2 new interactions.
     }
   ]
 ```
+
+## Step 9 - Verify the provider with the missing/invalid date query parameter
+
+Let us run this updated pact file with our providers. We still get a 200 response as the provider doesn't yet do anything useful with the date.
+
+Here is the provider test output:
+
+```console
+$ npm run test:pact:provider
+
+> pact-workshop-js@1.0.0 test:pact:provider /Users/mfellows/development/public/pact-workshop-js
+> mocha provider/test/providerPact.spec.js
+
+
+
+Animal Profile Service listening on http://localhost:8081
+  Pact Verification
+    1) should validate the expectations of Our Little Consumer
+
+
+  0 passing (756ms)
+  1 failing
+
+  1) Pact Verification should validate the expectations of Our Little Consumer:
+     Error: Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+
+Verifying a pact between Our Little Consumer and Our Provider
+  A request for json data
+    with GET /provider?validDate=2017-06-12T12%3A05%3A35.271Z
+      returns a response which
+        has status code 200
+        has a matching body
+        includes headers
+          "Content-Type" with value "application/json; charset=utf-8"
+  A request with an invalid date parameter
+    with GET /provider?validDate=This+is+not+a+date
+      returns a response which
+        has status code 400 (FAILED - 1)
+        has a matching body (FAILED - 2)
+        includes headers
+          "Content-Type" with value "application/json; charset=utf-8"
+  A request with a missing date parameter
+    with GET /provider
+      returns a response which
+        has status code 400 (FAILED - 3)
+        has a matching body (FAILED - 4)
+        includes headers
+          "Content-Type" with value "application/json; charset=utf-8"
+
+Failures:
+
+  1) Verifying a pact between Our Little Consumer and Our Provider A request with an invalid date parameter with GET /provider?validDate=This+is+not+a+date returns a response which has status code 400
+     Failure/Error: expect(response_status).to eql expected_response_status
+
+       expected: 400
+            got: 200
+
+       (compared using eql?)
+
+  2) Verifying a pact between Our Little Consumer and Our Provider A request with an invalid date parameter with GET /provider?validDate=This+is+not+a+date returns a response which has a matching body
+     Failure/Error: expect(response_body).to match_term expected_response_body, diff_options
+
+       Actual: {"test":"NO","validDate":"2017-06-12T22:09:32+10:00","count":100}
+
+       @@ -1,2 +1,6 @@
+       -"'This is not a date' is not a date"
+       +{
+       +  "test": "NO",
+       +  "validDate": "2017-06-12T22:09:32+10:00",
+       +  "count": 100
+       +}
+
+       Key: - means "expected, but was not found".
+            + means "actual, should not be found".
+            Values where the expected matches the actual are not shown.
+
+  3) Verifying a pact between Our Little Consumer and Our Provider A request with a missing date parameter with GET /provider returns a response which has status code 400
+     Failure/Error: expect(response_status).to eql expected_response_status
+
+       expected: 400
+            got: 200
+
+       (compared using eql?)
+
+  4) Verifying a pact between Our Little Consumer and Our Provider A request with a missing date parameter with GET /provider returns a response which has a matching body
+     Failure/Error: expect(response_body).to match_term expected_response_body, diff_options
+
+       Actual: {"test":"NO","validDate":"2017-06-12T22:09:32+10:00","count":100}
+
+       @@ -1,2 +1,6 @@
+       -"validDate is required"
+       +{
+       +  "test": "NO",
+       +  "validDate": "2017-06-12T22:09:32+10:00",
+       +  "count": 100
+       +}
+
+       Key: - means "expected, but was not found".
+            + means "actual, should not be found".
+            Values where the expected matches the actual are not shown.
+```
+
+Time to update the providers to handle these cases.
