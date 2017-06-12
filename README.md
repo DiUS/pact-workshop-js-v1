@@ -8,7 +8,7 @@ Given we have a client that needs to make a HTTP GET request to a provider servi
 
 The consumer client is quite simple and looks like this
 
-*/Users/mfellows/development/public/pact-workshop-js/consumer/consumer.js:*
+*consumer/consumer.js:*
 
 ```js
 request
@@ -21,7 +21,7 @@ request
 
 and the express provider resource
 
-*/Users/mfellows/development/public/pact-workshop-js/provider/provider.js:*
+*provider/provider.js:*
 
 ```js
 server.get('/provider/:', (req, res) => {
