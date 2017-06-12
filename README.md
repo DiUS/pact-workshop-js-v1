@@ -140,3 +140,138 @@ $ node consumer/consumer.js
 
 The provider returns a `validDate` while the consumer is
 trying to use `date`, which will blow up when run for real even with the tests all passing. Here is where Pact comes in.
+
+## Step 3 - Pact to the rescue
+
+Let us add Pact to the project and write a consumer pact test.
+
+*/Users/mfellows/development/public/pact-workshop-js/consumer/test/consumerPact.spec.js:*
+
+```js
+const provider = pact({
+  consumer: 'Our Little Consumer',
+  provider: 'Our Provider',
+  port: API_PORT,
+  log: path.resolve(process.cwd(), 'logs', 'pact.log'),
+  dir: path.resolve(process.cwd(), 'pacts'),
+  logLevel: LOG_LEVEL,
+  spec: 2
+})
+const submissionDate = new Date().toISOString()
+const date = '2013-08-16T15:31:20+10:00'
+const expectedBody = {
+  test: 'NO',
+  date: date,
+  count: 1000
+}
+
+describe('Pact with Our Provider', () => {
+  describe('given data count > 0', () => {
+    describe('when a call to the Provider is made', () => {
+      before(() => {
+        return provider.setup()
+          .then(() => {
+            provider.addInteraction({
+              state: 'data count > 0',
+              uponReceiving: 'a request for JSON data',
+              withRequest: {
+                method: 'GET',
+                path: '/provider',
+                query: {
+                  validDate: submissionDate
+                }
+              },
+              willRespondWith: {
+                status: 200,
+                headers: {
+                  'Content-Type': 'application/json; charset=utf-8'
+                },
+                body: expectedBody
+              }
+            })
+          })
+      })
+
+      it('can process the JSON payload from the provider', done => {
+        const response = fetchProviderData(submissionDate)
+
+        expect(response).to.eventually.have.property('count', 1000)
+        expect(response).to.eventually.have.property('date', date).notify(done)
+      })
+
+      it('should validate the interactions and create a contract', () => {
+        return provider.verify()
+      })
+    })
+
+    // Write pact files to file
+    after(() => {
+      return provider.finalize()
+    })
+  })
+})
+```
+
+This test starts a mock server on port 1234 that pretends to be our provider. To get this to work we needed to update
+our consumer to pass in the URL of the provider. We also updated the `fetchAndProcessData` method to pass in the
+query parameter.
+
+Running this spec still passes, but it creates a pact file which we can use to validate our assumptions on the provider side.
+
+```console
+$ npm run "test:pact:consumer"
+
+> pact-workshop-js@1.0.0 test:pact:consumer /Users/mfellows/development/public/pact-workshop-js
+> mocha consumer/test/consumerPact.spec.js
+
+  Pact with Our Provider
+    when a call to the Provider is made
+      when data count > 0
+        ✓ can process the JSON payload from the provider
+        ✓ should validate the interactions and create a contract
+
+
+  2 passing (571ms)
+
+```
+
+Generated pact file (*pacts/our_little_consumer-our_provider.json*):
+
+```json
+{
+  "consumer": {
+    "name": "Our Little Consumer"
+  },
+  "provider": {
+    "name": "Our Provider"
+  },
+  "interactions": [
+    {
+      "description": "a request for JSON data",
+      "providerState": "data count > 0",
+      "request": {
+        "method": "GET",
+        "path": "/provider",
+        "query": "validDate=2017-06-12T08%3A04%3A24.387Z"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "body": {
+          "test": "NO",
+          "date": "2013-08-16T15:31:20+10:00",
+          "count": 1000
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    }
+  }
+}
+```
+
