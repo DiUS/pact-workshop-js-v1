@@ -1,0 +1,45 @@
+{
+  "name": "pact-workshop-js",
+  "version": "1.0.0",
+  "description": "Example JS project for the Pact workshop",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DiUS/pact-workshop-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DiUS/pact-workshop-js/issues"
+  },
+  "homepage": "https://github.com/DiUS/pact-workshop-js#readme",
+  "author": "Matt Fellows <m@onegeek.com.au>",
+  "license": "Apache-2.0",
+  "standard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "test/**"
+    ]
+  },
+  "engines": {
+    "node": ">=4"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "cli-color": "^1.1.0",
+    "concurrently": "^3.1.0",
+    "eslint": "^3.13.1",
+    "eslint-config-google": "^0.7.1",
+    "mocha": "^3.2.0",
+    "pact": "^1.0.0",
+    "standard": "^10.0.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "superagent": "^3.3.2"
+  }
+}
