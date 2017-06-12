@@ -42,7 +42,12 @@ describe('Pact Verification', () => {
       providerBaseUrl: 'http://localhost:8081',
       providerStatesUrl: 'http://localhost:8081/states',
       providerStatesSetupUrl: 'http://localhost:8081/setup',
-      pactUrls: [path.resolve(process.cwd(), './pacts/our_little_consumer-our_provider.json')]
+      pactBrokerUrl: 'https://test.pact.dius.com.au/',
+      tags: ['prod'],
+      pactBrokerUsername: 'dXfltyFMgNOFZAxr8io9wJ37iUpY42M',
+      pactBrokerPassword: 'O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1',
+      publishVerificationResult: true,
+      providerVersion: '1.0.0'
     }
 
     return verifier.verifyProvider(opts)

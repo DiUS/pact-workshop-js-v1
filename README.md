@@ -212,7 +212,7 @@ describe('Pact with Our Provider', () => {
 })
 ```
 
-This test starts a mock server on port 1234 that pretends to be our provider. To get this to work we needed to update
+This test starts a mock server on port 1234 that pretends to be Our Provider. To get this to work we needed to update
 our consumer to pass in the URL of the provider. We also updated the `fetchAndProcessData` method to pass in the
 query parameter.
 
@@ -596,7 +596,7 @@ After running our specs, the pact file will have 2 new interactions.
 
 ## Step 9 - Verify the provider with the missing/invalid date query parameter
 
-Let us run this updated pact file with our providers. We still get a 200 response as the provider doesn't yet do anything useful with the date.
+Let us run this updated pact file with Our Providers. We still get a 200 response as the provider doesn't yet do anything useful with the date.
 
 Here is the provider test output:
 
@@ -696,7 +696,7 @@ Time to update the providers to handle these cases.
 
 ## Step 10 - Update the providers to handle the missing/invalid query parameters
 
-Let's fix our provider so it generate the correct responses for the query parameters.
+Let's fix Our Provider so it generate the correct responses for the query parameters.
 
 
 The API resource gets updated to check if the parameter has been passed, and handle a date parse Error
@@ -837,11 +837,11 @@ This adds a new interaction to the pact file:
 
 ```
 
-Your provider side verification will fail as it is not yet aware of these new 'states'.
+YOur Provider side verification will fail as it is not yet aware of these new 'states'.
 
 ## Step 12 - provider states for the providers
 
-To be able to verify our providers, we need to be able to change the data that the provider returns. To do this, we need to instrument the running API with a couple of [diagnostic endpoints](https://github.com/pact-foundation/pact-js#api-with-provider-states) to modify the data available to the API at runtime.
+To be able to verify Our Providers, we need to be able to change the data that the provider returns. To do this, we need to instrument the running API with a couple of [diagnostic endpoints](https://github.com/pact-foundation/pact-js#api-with-provider-states) to modify the data available to the API at runtime.
 
 For our case, we are just going to use an in memory object to act as our persistence layer, but in a real project you would probably use a database.
 
@@ -983,4 +983,87 @@ Verifying a pact between Our Little Consumer and Our Provider
 
 
   1 passing (567ms)
+
 ```
+
+# Step 13 - Using a Pact Broker
+
+We've been publishing our pacts from the consumer project by essentially sharing the file system with the provider. But this is not very manageable when you have multiple teams contributing to the code base, and pushing to CI. We can use a [Pact Broker](https://pact.dius.com.au) to do this instead.
+
+Using a broker simplies the management of pacts and adds a number of useful features, including some safety enhancements for continuous delivery which we'll see shortly.
+
+### Consumer
+
+First, in the consumer project we need to tell Pact about our broker. We've created a small utility to push the pact files to the broker:
+
+*consumer/test/publish:*
+
+```groovy
+const opts = {
+  pactUrls: [path.resolve(__dirname, '../../pacts/our_little_consumer-our_provider.json')],
+  pactBroker: 'https://test.pact.dius.com.au',
+  pactBrokerUsername: 'dXfltyFMgNOFZAxr8io9wJ37iUpY42M',
+  pactBrokerPassword: 'O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1',
+  tags: ['prod', 'test'],
+  consumerVersion: '1.0.0'
+}
+
+pact.publishPacts(opts)
+```
+
+You can run this with `test:pact:publish`:
+
+```console
+$ npm run test:pact:publish
+
+> pact-workshop-js@1.0.0 test:pact:publish /Users/mfellows/development/public/pact-workshop-js
+> node consumer/test/publish.js
+
+Pact contract publishing complete!
+
+Head over to https://test.pact.dius.com.au/ and login with
+=> Username: dXfltyFMgNOFZAxr8io9wJ37iUpY42M
+=> Password: O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1
+to see your published contracts.
+```
+
+Have a browse around the broker and see your newly published contract!
+
+### Provider
+
+All we need to do for the provider is update where it finds its pacts from local URLs, to one from a broker:
+
+```js
+let opts = {
+  provider: 'Our%20Provider',
+  providerBaseUrl: 'http://localhost:8081',
+  providerStatesUrl: 'http://localhost:8081/states',
+  providerStatesSetupUrl: 'http://localhost:8081/setup',
+  pactBrokerUrl: 'https://test.pact.dius.com.au/',
+  tags: ['prod'],
+  pactBrokerUsername: 'dXfltyFMgNOFZAxr8io9wJ37iUpY42M',
+  pactBrokerPassword: 'O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1',
+  publishVerificationResult: true,
+  providerVersion: '1.1.0'
+}
+```
+
+One thing you'll note in the output, is a message like this:
+
+```console
+Publishing verification result {"success":true,"providerApplicationVersion":"1.0.0"} to https://dXfltyFMgNOFZAxr8io9wJ37iUpY42M:*****@test.pact.dius.com.au/pacts/provider/Our%20Provider/consumer/Our%20Little%20Consumer/pact-version/1e37fb5393ea824ad898a5f12fbaa66af7ff3d3b/verification-results
+```
+
+This is a relatively new feature, but is very powerful. Called Verifications, it allows providers to report back the status of a verification to the broker. You'll get a quick view of the status of each consumer and provider on a nice dashboard. But, it is much more important than this!
+
+With just a simple query to an API, we can quickly determine if a consumer is safe to release or not - the Broker will detect if any contracts for the consumer have changed and if so, have they been validated by each provider.
+
+If something has changed, or it hasn't yet been validated by all downstream providers, then you should prevent any deployment going ahead. This is obviously really powerful for continuous delivery, which we alread had for providers.
+
+Here is a simple cURL that will tell you if it's safe to release Our Little Consumer:
+
+```
+$ curl -s -u dXfltyFMgNOFZAxr8io9wJ37iUpY42M:O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1 https://test.pact.dius.com.au/verification-results/consumer/Our%20Little%20Consumer/version/1.0.0/latest | jq .success
+```
+
+That's it - you're now a Pact pro!

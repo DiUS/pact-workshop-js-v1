@@ -7,6 +7,7 @@
     "lint": "standard",
     "test:consumer": "./node_modules/.bin/mocha consumer/test/consumer.spec.js",
     "test:pact:consumer": "./node_modules/.bin/mocha consumer/test/consumerPact.spec.js",
+    "test:pact:publish": "node consumer/test/publish.js",
     "test:pact:provider": "./node_modules/.bin/mocha provider/test/providerPact.spec.js"
   },
   "repository": {
