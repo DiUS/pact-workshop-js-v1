@@ -86,7 +86,7 @@ describe('Pact with Our Provider', () => {
               headers: {
                 'Content-Type': 'application/json; charset=utf-8'
               },
-              body: '"\'This is not a date\' is not a date"'
+              body: {'error': '\'This is not a date\' is not a date'}
             }
           })
         })
@@ -113,7 +113,7 @@ describe('Pact with Our Provider', () => {
               headers: {
                 'Content-Type': 'application/json; charset=utf-8'
               },
-              body: '"validDate is required"'
+              body: {'error': '"validDate is required"'}
             }
           })
         })
