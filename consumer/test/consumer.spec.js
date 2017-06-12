@@ -21,12 +21,12 @@ describe('Consumer', () => {
         .reply(200, {
           test: 'NO',
           date: date,
-          count: 100
+          count: 1000
         })
 
       const response = fetchProviderData(new Date().toISOString())
 
-      expect(response).to.eventually.have.property('count', 100)
+      expect(response).to.eventually.have.property('count', 1000)
       expect(response).to.eventually.have.property('date', date).notify(done)
     })
   })
