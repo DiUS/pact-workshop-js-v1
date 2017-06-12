@@ -19,7 +19,7 @@ const fetchProviderData = (submissionDate) => {
     .then((res) => {
       if (res.body.validDate.match(dateRegex)) {
         return {
-          count: res.body.count,
+          value: 100 / res.body.count,
           date: moment(res.body.validDate, moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ')
         }
       } else {

@@ -67,7 +67,7 @@ const fetchProviderData = () => {
     .query({validDate: new Date().toISOString()})
     .then((res) => {
       return {
-        count: res.body.count,
+        value: 100 / res.body.count,
         date: res.body.date
       }
     })
@@ -613,7 +613,7 @@ Animal Profile Service listening on http://localhost:8081
     1) should validate the expectations of Our Little Consumer
 
 
-  0 passing (756ms)
+  0 passing (590ms)
   1 failing
 
   1) Pact Verification should validate the expectations of Our Little Consumer:
@@ -621,7 +621,7 @@ Animal Profile Service listening on http://localhost:8081
 
 Verifying a pact between Our Little Consumer and Our Provider
   A request for json data
-    with GET /provider?validDate=2017-06-12T12%3A05%3A35.271Z
+    with GET /provider?validDate=2017-06-12T12%3A47%3A18.793Z
       returns a response which
         has status code 200
         has a matching body
@@ -655,15 +655,12 @@ Failures:
   2) Verifying a pact between Our Little Consumer and Our Provider A request with an invalid date parameter with GET /provider?validDate=This+is+not+a+date returns a response which has a matching body
      Failure/Error: expect(response_body).to match_term expected_response_body, diff_options
 
-       Actual: {"test":"NO","validDate":"2017-06-12T22:09:32+10:00","count":100}
+       Actual: {"test":"NO","validDate":"2017-06-12T22:47:22+10:00","count":100}
 
-       @@ -1,2 +1,6 @@
-       -"'This is not a date' is not a date"
-       +{
-       +  "test": "NO",
-       +  "validDate": "2017-06-12T22:09:32+10:00",
-       +  "count": 100
-       +}
+       @@ -1,4 +1,3 @@
+        {
+       -  "error": "'This is not a date' is not a date"
+        }
 
        Key: - means "expected, but was not found".
             + means "actual, should not be found".
@@ -680,19 +677,18 @@ Failures:
   4) Verifying a pact between Our Little Consumer and Our Provider A request with a missing date parameter with GET /provider returns a response which has a matching body
      Failure/Error: expect(response_body).to match_term expected_response_body, diff_options
 
-       Actual: {"test":"NO","validDate":"2017-06-12T22:09:32+10:00","count":100}
+       Actual: {"test":"NO","validDate":"2017-06-12T22:47:22+10:00","count":100}
 
-       @@ -1,2 +1,6 @@
-       -"validDate is required"
-       +{
-       +  "test": "NO",
-       +  "validDate": "2017-06-12T22:09:32+10:00",
-       +  "count": 100
-       +}
+       @@ -1,4 +1,3 @@
+        {
+       -  "error": "validDate is required"
+        }
 
        Key: - means "expected, but was not found".
             + means "actual, should not be found".
             Values where the expected matches the actual are not shown.
+
+3 interactions, 2 failures
 ```
 
 Time to update the providers to handle these cases.
