@@ -25,6 +25,6 @@ server.get('/provider', (req, res) => {
   )
 })
 
-server.listen(port, () => {
-  console.log(`Provider Service listening on http://localhost:${port}`)
-})
+module.exports = {
+  server
+}

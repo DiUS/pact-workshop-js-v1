@@ -27,7 +27,7 @@ const submissionDate = new Date().toISOString()
 const expectedBody = {
   test: 'NO',
   date: date,
-  count: 100
+  count: 1000
 }
 
 describe('Pact with Our Provider', () => {
@@ -37,7 +37,6 @@ describe('Pact with Our Provider', () => {
         return provider.setup()
           .then(() => {
             provider.addInteraction({
-              state: 'data count > 0',
               uponReceiving: 'a request for JSON data',
               withRequest: {
                 method: 'GET',
@@ -60,7 +59,7 @@ describe('Pact with Our Provider', () => {
       it('can process the JSON payload from the provider', done => {
         const response = fetchProviderData(submissionDate)
 
-        expect(response).to.eventually.have.property('count', 100)
+        expect(response).to.eventually.have.property('count', 1000)
         expect(response).to.eventually.have.property('date', date).notify(done)
       })
 
