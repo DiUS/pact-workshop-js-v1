@@ -37,7 +37,6 @@ describe('Pact with Our Provider', () => {
         return provider.setup()
           .then(() => {
             provider.addInteraction({
-              state: 'data count > 0',
               uponReceiving: 'a request for JSON data',
               withRequest: {
                 method: 'GET',
