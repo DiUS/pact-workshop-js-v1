@@ -510,7 +510,7 @@ describe('and an invalid date is provided', () => {
         headers: {
           'Content-Type': 'application/json; charset=utf-8'
         },
-        body: '"\'This is not a date\' is not a date"'
+        body: {'error': '"\'This is not a date\' is not a date"'}
       }
     })
   })
@@ -537,7 +537,7 @@ describe('and no date is provided', () => {
         headers: {
           'Content-Type': 'application/json; charset=utf-8'
         },
-        body: '"validDate is required"'
+        body: {'error': '"validDate is required"'}
       }
     })
   })
@@ -558,36 +558,40 @@ After running our specs, the pact file will have 2 new interactions.
 
 ```json
 [
-    {
-      "description": "a request with an invalid date parameter",
-      "request": {
-        "method": "GET",
-        "path": "/provider",
-        "query": "validDate=This+is+not+a+date"
-      },
-      "response": {
-        "status": 400,
-        "headers": {
-          "Content-Type": "application/json; charset=utf-8"
-        },
-        "body": "\"'This is not a date' is not a date\""
-      }
+  {
+    "description": "a request with an invalid date parameter",
+    "request": {
+      "method": "GET",
+      "path": "/provider",
+      "query": "validDate=This+is+not+a+date"
     },
-    {
-      "description": "a request with a missing date parameter",
-      "request": {
-        "method": "GET",
-        "path": "/provider"
+    "response": {
+      "status": 400,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
       },
-      "response": {
-        "status": 400,
-        "headers": {
-          "Content-Type": "application/json; charset=utf-8"
-        },
-        "body": "\"validDate is required\""
+      "body": {
+        "error": "'This is not a date' is not a date"
       }
     }
-  ]
+  },
+  {
+    "description": "a request with a missing date parameter",
+    "request": {
+      "method": "GET",
+      "path": "/provider"
+    },
+    "response": {
+      "status": 400,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
+        "error": "validDate is required"
+      }
+    }
+  }
+]
 ```
 
 ## Step 9 - Verify the provider with the missing/invalid date query parameter
