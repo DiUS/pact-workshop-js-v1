@@ -331,3 +331,7 @@ Failures:
 The test has failed for 2 reasons. Firstly, the count field has a different value to what was expected by the consumer.
 
 Secondly, and more importantly, the consumer was expecting a `date` field while the provider generates a `validDate` field. Also, the date formats are different.
+
+# Step 5
+
+Intentionally blank to align with the [JVM workshop](https://github.com/DiUS/pact-workshop-jvm/) steps
