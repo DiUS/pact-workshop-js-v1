@@ -410,3 +410,77 @@ Error: Invalid date format in response
     at process._tickCallback (internal/process/next_tick.js:103:7)
 ```
 
+## Step 7 - Verify the providers again
+
+We need to run 'npm run test:pact:consumer' to publish the consumer pact file again. Then, running the provider verification tests we get the expected failure about the date format.
+
+```
+Failures:
+
+...
+
+@@ -1,4 +1,4 @@
+{
+-  "validDate": /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/
++  "validDate": "2017-06-12T10:28:12.904Z"
+}
+```
+
+_NOTE_: There is currently a [bug](https://github.com/realestate-com-au/pact/issues/141) in the Ruby implementation under the hood that makes this error message unhelpful - we're working on it!
+
+Lets fix the provider and then re-run the verification tests. Here is the corrected `/provider` resource:
+
+```js
+server.get('/provider', (req, res) => {
+  const date = req.query.validDate
+
+  res.json(
+    {
+      'test': 'NO',
+      'validDate': moment(new Date(), moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ'),
+      'count': 100
+    }
+  )
+})
+```
+
+Running the verification against the providers now pass. Yay!
+
+```console
+$ npm run test:pact:provider
+
+> pact-workshop-js@1.0.0 test:pact:provider /Users/mfellows/development/public/pact-workshop-js
+> mocha provider/test/providerPact.spec.js
+
+
+
+Animal Profile Service listening on http://localhost:8081
+  Pact Verification
+Pact Verification Complete!
+Reading pact at /Users/mfellows/development/public/pact-workshop-js/pacts/our_little_consumer-our_provider.json
+
+Verifying a pact between Our Little Consumer and Our Provider
+  A request for json data
+    with GET /provider?validDate=2017-06-12T10%3A39%3A01.793Z
+      returns a response which
+        has status code 200
+        has a matching body
+        includes headers
+          "Content-Type" with value "application/json; charset=utf-8"
+
+1 interaction, 0 failures
+
+
+
+    ✓ should validate the expectations of Our Little Consumer (498ms)
+
+
+  1 passing (503ms)
+```
+
+Our consumer also now works:
+
+```console
+$ node consumer/consumer.js
+{ count: 100, date: '2017-06-12T20:40:51+10:00' }
+```

@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const moment = require('moment')
 const bodyParser = require('body-parser')
 const server = express()
 const port = 8080 || process.env.API_PORT
@@ -19,7 +20,7 @@ server.get('/provider', (req, res) => {
   res.json(
     {
       'test': 'NO',
-      'validDate': new Date().toISOString(),
+      'validDate': moment(new Date(), moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ'),
       'count': 100
     }
   )
