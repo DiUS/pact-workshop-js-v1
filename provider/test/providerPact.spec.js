@@ -7,14 +7,6 @@ chai.use(chaiAsPromised)
 
 const { server, dataStore } = require('../provider.js')
 
-// Append some extra endpoints to mutate current state of the API
-// NOTE: this requirement will be soon removed!
-server.get('/states', (req, res) => {
-  res.json({
-    "Our Little Consumer": ['date count == 0', 'date count > 0']
-  })
-})
-
 // Set the current state
 server.post('/setup', (req, res) => {
   switch (req.body.state) {
@@ -40,7 +32,6 @@ describe('Pact Verification', () => {
     let opts = {
       provider: 'Our Provider',
       providerBaseUrl: 'http://localhost:8081',
-      providerStatesUrl: 'http://localhost:8081/states',
       providerStatesSetupUrl: 'http://localhost:8081/setup',
       pactUrls: [path.resolve(process.cwd(), './pacts/our_little_consumer-our_provider.json')]
     }

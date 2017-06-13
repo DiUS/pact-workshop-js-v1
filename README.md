@@ -841,11 +841,11 @@ Your provider side verification will fail as it is not yet aware of these new 's
 
 ## Step 12 - provider states for the providers
 
-To be able to verify our providers, we need to be able to change the data that the provider returns. To do this, we need to instrument the running API with a couple of [diagnostic endpoints](https://github.com/pact-foundation/pact-js#api-with-provider-states) to modify the data available to the API at runtime.
+To be able to verify our providers, we need to be able to change the data that the provider returns. To do this, we need to instrument the running API with an extra [diagnostic endpoint](https://github.com/pact-foundation/pact-js#api-with-provider-states) to modify the data available to the API at runtime.
 
 For our case, we are just going to use an in memory object to act as our persistence layer, but in a real project you would probably use a database.
 
-_NOTE_: We are in the process of [removing](https://github.com/pact-foundation/pact-node/pull/40) the `providerStatesUrl` property which will simplify this process. Here is our data store:
+Here is our data store:
 
 ```js
 const dataStore = {
@@ -883,9 +883,8 @@ server.get('/provider', (req, res) => {
 
 Now we can change the data store value in our test based on the provider state to vary its behaviour.
 
-Next we need to add two endpoints to be able to manipulate this data store:
+Next we need to add a new endpoint to be able to manipulate this data store:
 
-1. `/states` to return the list of available provider states
 1. `/setup` to allow the Pact verification process to notify the API to switch to the new state
 
 We do this by instrumenting the API in the _test code only_:
@@ -894,12 +893,6 @@ We do this by instrumenting the API in the _test code only_:
 
 ```js
 const { server, dataStore } = require('../provider.js')
-
-server.get('/states', (req, res) => {
-  res.json({
-    "Our Little Provider": ['date count == 0', 'date count > 0']
-  })
-})
 
 // Set the current state
 server.post('/setup', (req, res) => {
