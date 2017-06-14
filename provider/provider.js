@@ -23,11 +23,11 @@ server.get('/provider', (req, res) => {
 
   if (!validDate) {
     res.status(400)
-    res.json({error: 'validDate is required'});
+    res.json({ error: 'validDate is required' });
   } else if (!moment(validDate, moment.ISO_8601).isValid()) {
     res.status(400)
-    res.json({error: `'${validDate}' is not a date`})
-  }  else {
+    res.json({ error: `'${validDate}' is not a date` })
+  } else {
     if (dataStore.count > 0) {
       res.json({
         'test': 'NO',

@@ -21,7 +21,7 @@ server.post('/setup', (req, res) => {
 })
 
 server.listen(8081, () => {
-  console.log('Animal Profile Service listening on http://localhost:8081')
+  console.log('Provider service listening on http://localhost:8081')
 })
 
 // Verify that the provider meets all consumer expectations
