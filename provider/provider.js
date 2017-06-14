@@ -13,7 +13,6 @@ server.use((req, res, next) => {
   next()
 })
 
-// Get all animals
 server.get('/provider', (req, res) => {
   const date = req.query.validDate
 

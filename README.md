@@ -287,7 +287,7 @@ npm run test:pact:provider
 
 
 
-Animal Profile Service listening on http://localhost:8081
+Provider Service listening on http://localhost:8081
   Pact Verification
     1) should validate the expectations of Our Little Consumer
 
@@ -454,7 +454,7 @@ $ npm run test:pact:provider
 
 
 
-Animal Profile Service listening on http://localhost:8081
+Provider Service listening on http://localhost:8081
   Pact Verification
 Pact Verification Complete!
 Reading pact at pacts/our_little_consumer-our_provider.json
