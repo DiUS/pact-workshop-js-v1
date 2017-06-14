@@ -13,7 +13,6 @@ server.use((req, res, next) => {
   next()
 })
 
-// Get all animals
 server.get('/provider', (req, res) => {
   const validDate = req.query.validDate
   const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/
