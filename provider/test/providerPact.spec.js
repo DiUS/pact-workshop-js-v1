@@ -8,7 +8,7 @@ chai.use(chaiAsPromised)
 const { server } = require('../provider.js')
 
 server.listen(8081, () => {
-  console.log('Animal Profile Service listening on http://localhost:8081')
+  console.log('Provider service listening on http://localhost:8081')
 })
 
 // Verify that the provider meets all consumer expectations
