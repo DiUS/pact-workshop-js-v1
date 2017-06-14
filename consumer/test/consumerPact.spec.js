@@ -53,7 +53,7 @@ describe('Pact with Our Provider', () => {
               },
               body: {
                 test: 'NO',
-                validDate: term({generate: date, matcher: dateRegex}),
+                validDate: term({ generate: date, matcher: dateRegex }),
                 count: like(100)
               }
             }
@@ -89,7 +89,7 @@ describe('Pact with Our Provider', () => {
               headers: {
                 'Content-Type': 'application/json; charset=utf-8'
               },
-              body: {'error': '\'This is not a date\' is not a date'}
+              body: { 'error': '\'This is not a date\' is not a date' }
             }
           })
         })
@@ -117,7 +117,7 @@ describe('Pact with Our Provider', () => {
               headers: {
                 'Content-Type': 'application/json; charset=utf-8'
               },
-              body: {'error': 'validDate is required'}
+              body: { 'error': 'validDate is required' }
             }
           })
         })
@@ -149,11 +149,6 @@ describe('Pact with Our Provider', () => {
               status: 404,
               headers: {
                 'Content-Type': 'application/json; charset=utf-8'
-              },
-              body: {
-                test: 'NO',
-                validDate: term({generate: date, matcher: dateRegex}),
-                count: like(100)
               }
             }
           })
