@@ -33,7 +33,7 @@
     "eslint": "^3.13.1",
     "eslint-config-google": "^0.7.1",
     "mocha": "^3.2.0",
-    "pact": "^1.0.0",
+    "pact": "^2.6.0",
     "standard": "^10.0.2"
   },
   "dependencies": {
