@@ -13,11 +13,11 @@ const fetchProviderData = (submissionDate) => {
       // Validate date
       if (res.body.validDate.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/)) {
         return {
-          value: 100 / res.body.count,
+          count: res.body.count,
           date: moment(res.body.validDate, moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ')
         }
       } else {
-        throw new Error('Invalid date format in response')
+        return Promise.reject(new Error('Invalid date format in response'))
       }
     })
 }

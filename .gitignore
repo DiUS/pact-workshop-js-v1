@@ -38,3 +38,6 @@ jscpd.json
 
 # Pacts
 pacts/
+
+# Idea file
+.idea

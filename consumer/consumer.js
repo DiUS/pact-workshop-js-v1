@@ -1,7 +1,11 @@
 const client = require('./client')
 
-client.fetchProviderData().then(response => {
+client.fetchProviderData()
+  .then(response => {
   console.log(response)
-}, error => {
-  console.error(error)
-})
+    return response
+  })
+  .catch((error) => {
+    console.error(error)
+    return error
+  })

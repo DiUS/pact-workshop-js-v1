@@ -58,11 +58,12 @@ describe('Pact with Our Provider', () => {
           })
       })
 
-      it('can process the JSON payload from the provider', done => {
-        const response = fetchProviderData(submissionDate)
+      it('responds with a valid json with a count property with value 100', done => {
+        expect(fetchProviderData(submissionDate)).to.eventually.have.property('count', 100).notify(done)
+      })
 
-        expect(response).to.eventually.have.property('count', 100)
-        expect(response).to.eventually.have.property('date', date).notify(done)
+      it('responds with a valid json with a date property that macthes the regex pattern', done => {
+        expect(fetchProviderData(submissionDate)).to.eventually.have.property('date', date).notify(done)
       })
 
       it('should validate the interactions and create a contract', () => {
