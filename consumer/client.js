@@ -13,7 +13,7 @@ const fetchProviderData = (submissionDate) => {
       // Validate date
       if (res.body.validDate.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/)) {
         return {
-          count: res.body.count,
+          value: 100 / res.body.count,
           date: moment(res.body.validDate, moment.ISO_8601).format('YYYY-MM-DDTHH:mm:ssZ')
         }
       } else {
