@@ -54,7 +54,7 @@ describe('Pact with Our Provider', () => {
               body: {
                 test: 'NO',
                 validDate: term({ generate: date, matcher: dateRegex }),
-                count: like(100)
+                count: like(1000)
               }
             }
           })
