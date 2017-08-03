@@ -8,7 +8,7 @@ const API_ENDPOINT = `${API_HOST}:${API_PORT}`
 const fetchProviderData = (submissionDate) => {
   return request
     .get(`${API_ENDPOINT}/provider`)
-    .query({validDate: submissionDate})
+    .query({ validDate: submissionDate })
     .then((res) => {
       // Validate date
       if (res.body.validDate.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/)) {
