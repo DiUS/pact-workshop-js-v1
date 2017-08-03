@@ -6,6 +6,8 @@ This project has 2 components, a consumer project and a service provider as an E
 
 Given we have a client that needs to make a HTTP GET request to a provider service, and requires a response in JSON format.
 
+![Simple Consumer](diagrams/workshop_step1.png)
+
 The consumer client is quite simple and looks like this
 
 *consumer/consumer.js:*
@@ -38,6 +40,8 @@ server.get('/provider/:', (req, res) => {
 ```
 
 This providers expects a `validDate` parameter in HTTP date format, and then return some simple json back.
+
+![Sequence Diagram](diagrams/sequence_diagram.png)
 
 Start the provider in a separate terminal:
 
@@ -84,6 +88,8 @@ const client = require('./client')
 client.fetchProviderData().then(response => console.log(response))
 ```
 
+![Sequence 2](diagrams/step2_sequence_diagram.png)
+
 Let's now test our updated client.
 
 *consumer/test/consumer.spec.js:*
@@ -111,6 +117,8 @@ describe('Consumer', () => {
   })
 })
 ```
+
+![Unit Test With Mocked Response](diagrams/step2_unit_test.png)
 
 Let's run this spec and see it all pass:
 
@@ -211,6 +219,10 @@ describe('Pact with Our Provider', () => {
   })
 })
 ```
+
+
+![Test using Pact](diagrams/step3_pact.png)
+
 
 This test starts a mock server on port 1234 that pretends to be our provider. To get this to work we needed to update
 our consumer to pass in the URL of the provider. We also updated the `fetchAndProcessData` method to pass in the
