@@ -12,12 +12,12 @@ const API_HOST = `http://localhost:${API_PORT}`
 describe('Consumer', () => {
   describe('when a call to the Provider is made', () => {
     const date = '2013-08-16T15:31:20+10:00'
-    const {fetchProviderData} = require('../client')
+    const { fetchProviderData } = require('../client')
 
     it('can process the JSON payload from the provider', done => {
       nock(API_HOST)
         .get('/provider')
-        .query({validDate: /.*/})
+        .query({ validDate: /.*/ })
         .reply(200, {
           test: 'NO',
           validDate: date,
