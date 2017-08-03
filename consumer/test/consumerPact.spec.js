@@ -50,19 +50,18 @@ describe('Pact with Our Provider', () => {
                 },
                 body: {
                   test: 'NO',
-                  validDate: term({generate: date, matcher: '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}'}),
-                  count: like(100)
+                  validDate: term({ generate: date, matcher: '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}' }),
+                  count: like(1000)
                 }
               }
             })
           })
       })
 
-      it('can process the JSON payload from the provider', done => {
+      it('can process the JSON payload from the provider', () => {
         const response = fetchProviderData(submissionDate)
 
-        expect(response).to.eventually.have.property('count', 100)
-        expect(response).to.eventually.have.property('date', date).notify(done)
+        return expect(response).to.eventually.have.property('count', 0.1)
       })
 
       it('should validate the interactions and create a contract', () => {
