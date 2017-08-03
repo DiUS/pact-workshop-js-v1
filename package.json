@@ -4,8 +4,12 @@
   "description": "Example JS project for the Pact workshop",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "lint": "standard",
     "test:consumer": "./node_modules/.bin/mocha consumer/test/consumer.spec.js"
+=======
+    "lint": "standard"
+>>>>>>> step1
   },
   "repository": {
     "type": "git",
@@ -21,6 +25,7 @@
     "parser": "babel-eslint",
     "ignore": [
       "test/**"
+<<<<<<< HEAD
     ],
     "global": [
       "describe",
@@ -31,6 +36,8 @@
       "afterEach",
       "it",
       "expect"
+=======
+>>>>>>> step1
     ]
   },
   "engines": {
@@ -44,7 +51,10 @@
     "eslint": "^3.13.1",
     "eslint-config-google": "^0.7.1",
     "mocha": "^3.2.0",
+<<<<<<< HEAD
     "nock": "^9.0.13",
+=======
+>>>>>>> step1
     "pact": "^2.6.0",
     "standard": "^10.0.2"
   },
