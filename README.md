@@ -6,6 +6,8 @@ This project has 2 components, a consumer project and a service provider as an E
 
 Given we have a client that needs to make a HTTP GET request to a provider service, and requires a response in JSON format.
 
+![Simple Consumer](diagrams/workshop_step1.png)
+
 The consumer client is quite simple and looks like this
 
 *consumer/consumer.js:*
@@ -38,6 +40,8 @@ server.get('/provider/:', (req, res) => {
 ```
 
 This providers expects a `validDate` parameter in HTTP date format, and then return some simple json back.
+
+![Sequence Diagram](diagrams/sequence_diagram.png)
 
 Start the provider in a separate terminal:
 
