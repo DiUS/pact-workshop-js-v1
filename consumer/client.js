@@ -10,7 +10,7 @@ const fetchProviderData = (submissionDate) => {
     .query({ validDate: submissionDate })
     .then((res) => {
       return {
-        value: 100 / res.body.count,
+        count: 100 / res.body.count,
         date: res.body.date
       }
     })
