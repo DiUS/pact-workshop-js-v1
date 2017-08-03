@@ -7,7 +7,7 @@ const API_ENDPOINT = `${API_HOST}:${API_PORT}`
 const fetchProviderData = (submissionDate) => {
   return request
     .get(`${API_ENDPOINT}/provider`)
-    .query({validDate: submissionDate})
+    .query({ validDate: submissionDate })
     .then((res) => {
       return {
         value: 100 / res.body.count,
