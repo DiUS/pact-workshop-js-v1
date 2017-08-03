@@ -10,7 +10,7 @@ const fetchProviderData = (submissionDate) => {
   const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/
 
   if (submissionDate) {
-    withDate = {validDate: submissionDate}
+    withDate = { validDate: submissionDate }
   }
 
   return request
@@ -26,7 +26,7 @@ const fetchProviderData = (submissionDate) => {
         throw new Error('Invalid date format in response')
       }
     }, (err) => {
-        throw new Error(`Error from response: ${err.body}`)
+      throw new Error(`Error from response: ${err.body}`)
     })
 }
 
