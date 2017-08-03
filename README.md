@@ -458,6 +458,8 @@ server.get('/provider', (req, res) => {
 })
 ```
 
+![Verification Passes](diagrams/step7_pact.png)
+
 Running the verification against the providers now pass. Yay!
 
 ```console
