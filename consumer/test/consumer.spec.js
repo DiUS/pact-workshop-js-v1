@@ -2,7 +2,7 @@ const chai = require('chai')
 const nock = require('nock')
 const chaiAsPromised = require('chai-as-promised')
 const expect = chai.expect
-const API_PORT = process.env.API_PORT || 8080
+const API_PORT = process.env.API_PORT || 9123
 chai.use(chaiAsPromised)
 
 // Configure and import consumer API
