@@ -47,7 +47,7 @@ Start the provider in a separate terminal:
 
 ```
 $ node provider/provider.js
-Provider Service listening on http://localhost:8080
+Provider Service listening on http://localhost:9123
 ```
 
 Running the client works nicely.
@@ -224,7 +224,7 @@ describe('Pact with Our Provider', () => {
 ![Test using Pact](diagrams/step3_pact.png)
 
 
-This test starts a mock server on port 1234 that pretends to be our provider. To get this to work we needed to update
+This test starts a mock server on port 9123 that pretends to be our provider. To get this to work we needed to update
 our consumer to pass in the URL of the provider. We also updated the `fetchAndProcessData` method to pass in the
 query parameter.
 
