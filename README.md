@@ -47,7 +47,7 @@ Start the provider in a separate terminal:
 
 ```
 $ node provider/provider.js
-Provider Service listening on http://localhost:8080
+Provider Service listening on http://localhost:9123
 ```
 
 Running the client works nicely.
