@@ -3,7 +3,7 @@ const path = require('path')
 const chaiAsPromised = require('chai-as-promised')
 const pact = require('pact')
 const expect = chai.expect
-const API_PORT = process.env.API_PORT || 8080
+const API_PORT = process.env.API_PORT || 9123
 const {
   fetchProviderData
 } = require('../client')
