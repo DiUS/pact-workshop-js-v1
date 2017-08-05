@@ -3,7 +3,7 @@ const cors = require('cors')
 const moment = require('moment')
 const bodyParser = require('body-parser')
 const server = express()
-const port = 8080 || process.env.API_PORT
+const port = 9123 || process.env.API_PORT
 
 server.use(cors())
 server.use(bodyParser.json())
