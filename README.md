@@ -440,8 +440,6 @@ Failures:
 }
 ```
 
-_NOTE_: There is currently a [bug](https://github.com/realestate-com-au/pact/issues/141) in the Ruby implementation under the hood that makes this error message unhelpful - we're working on it!
-
 Lets fix the provider and then re-run the verification tests. Here is the corrected `/provider` resource:
 
 ```js
