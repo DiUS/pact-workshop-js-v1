@@ -1042,7 +1042,7 @@ All we need to do for the provider is update where it finds its pacts from local
 
 ```js
 let opts = {
-  provider: 'Our%20Provider',
+  provider: 'Our Provider',
   providerBaseUrl: 'http://localhost:8081',
   providerStatesUrl: 'http://localhost:8081/states',
   providerStatesSetupUrl: 'http://localhost:8081/setup',
