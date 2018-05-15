@@ -180,7 +180,6 @@ describe('Pact with Our Provider', () => {
         return provider.setup()
           .then(() => {
             provider.addInteraction({
-              state: 'data count > 0',
               uponReceiving: 'a request for JSON data',
               withRequest: {
                 method: 'GET',
@@ -224,8 +223,8 @@ describe('Pact with Our Provider', () => {
 ![Test using Pact](diagrams/step3_pact.png)
 
 
-This test starts a mock server on port 9123 that pretends to be our provider. To get this to work we needed to update
-our consumer to pass in the URL of the provider. We also updated the `fetchAndProcessData` method to pass in the
+This test starts a mock server on port 1234 that pretends to be our provider. To get this to work we needed to update
+our consumer to pass in the URL of the provider. We also updated the `fetchProviderData` method to pass in the
 query parameter.
 
 Running this spec still passes, but it creates a pact file which we can use to validate our assumptions on the provider side.
