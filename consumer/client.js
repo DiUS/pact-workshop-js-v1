@@ -7,7 +7,7 @@ const API_ENDPOINT = `${API_HOST}:${API_PORT}`
 // Fetch provider data
 const fetchProviderData = (submissionDate) => {
   let withDate = {}
-  const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}/
+  const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[-+]\d{2}:\d{2}/
 
   if (submissionDate) {
     withDate = { validDate: submissionDate }
