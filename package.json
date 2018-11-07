@@ -18,22 +18,6 @@
   "homepage": "https://github.com/DiUS/pact-workshop-js#readme",
   "author": "Matt Fellows <m@onegeek.com.au>",
   "license": "Apache-2.0",
-  "standard": {
-    "parser": "babel-eslint",
-    "ignore": [
-      "test/**"
-    ],
-    "global": [
-      "describe",
-      "context",
-      "before",
-      "beforeEach",
-      "after",
-      "afterEach",
-      "it",
-      "expect"
-    ]
-  },
   "engines": {
     "node": ">=4"
   },
@@ -42,12 +26,10 @@
     "chai-as-promised": "^7.1.1",
     "cli-color": "^1.1.0",
     "concurrently": "^3.1.0",
-    "eslint": "^3.13.1",
-    "eslint-config-google": "^0.7.1",
     "mocha": "^3.2.0",
-    "nock": "^9.0.13",
-    "pact": "^2.6.0",
-    "standard": "^10.0.2"
+    "nock": "^10.0.2",
+    "@pact-foundation/pact": "^7.0.2",
+    "@pact-foundation/pact-node": "^6.20.0"
   },
   "dependencies": {
     "body-parser": "^1.16.1",
