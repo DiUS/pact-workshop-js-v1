@@ -8,14 +8,14 @@ const fetchProviderData = () => {
   return request
     .get(`${API_ENDPOINT}/provider`)
     .query({ validDate: new Date().toISOString() })
-    .then((res) => {
+    .then(res => {
       return {
         count: 100 / res.body.count,
-        date: res.body.date
+        date: res.body.date,
       }
     })
 }
 
 module.exports = {
-  fetchProviderData
+  fetchProviderData,
 }
