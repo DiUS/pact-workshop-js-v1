@@ -23,5 +23,5 @@ server.get('/provider', (req, res) => {
 })
 
 module.exports = {
-  server
+  server,
 }
