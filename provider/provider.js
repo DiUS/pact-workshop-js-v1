@@ -15,15 +15,13 @@ server.use((req, res, next) => {
 server.get('/provider', (req, res) => {
   const date = req.query.validDate
 
-  res.json(
-    {
-      'test': 'NO',
-      'validDate': new Date().toISOString(),
-      'count': 100
-    }
-  )
+  res.json({
+    test: 'NO',
+    validDate: new Date().toISOString(),
+    count: 100,
+  })
 })
 
 module.exports = {
-  server
+  server,
 }
