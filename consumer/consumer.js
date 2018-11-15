@@ -1,7 +1,10 @@
 const client = require('./client')
 
-client.fetchProviderData().then(response => {
-  console.log(response)
-}, error => {
-  console.error(error)
-})
+client.fetchProviderData(new Date().toISOString()).then(
+  response => {
+    console.log(response)
+  },
+  error => {
+    console.error(error)
+  }
+)
