@@ -345,6 +345,12 @@ The test has failed for 2 reasons. Firstly, the count field has a different valu
 
 Secondly, and more importantly, the consumer was expecting a `date` field while the provider generates a `validDate` field. Also, the date formats are different.
 
+_NOTE_: We have separated the API provider into two components: one that provides a testable API and the other to start the actual service for local testing. You should now start the provider as follows:
+
+```sh
+node provider/providerService.js
+```
+
 # Step 5
 
 Intentionally blank to align with the [JVM workshop](https://github.com/DiUS/pact-workshop-jvm/) steps
