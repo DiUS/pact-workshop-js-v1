@@ -1,15 +1,18 @@
 const pact = require('@pact-foundation/pact-node')
 const path = require('path')
 const opts = {
-  pactUrls: [path.resolve(__dirname, '../../pacts/our_little_consumer-our_provider.json')],
+  pactFilesOrDirs: [path.resolve(__dirname, '../../pacts/')],
   pactBroker: 'https://test.pact.dius.com.au',
   pactBrokerUsername: 'dXfltyFMgNOFZAxr8io9wJ37iUpY42M',
   pactBrokerPassword: 'O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1',
   tags: ['prod', 'test'],
-  consumerVersion: '1.0.0'
+  consumerVersion:
+    '1.0.' +
+    (process.env.USER ? process.env.USER : Math.floor(new Date() / 1000)),
 }
 
-pact.publishPacts(opts)
+pact
+  .publishPacts(opts)
   .then(() => {
     console.log('Pact contract publishing complete!')
     console.log('')

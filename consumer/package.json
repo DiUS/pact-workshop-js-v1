@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "Pact test consumer",
   "main": "consumer.js",
-  "scripts": {
-  },
+  "scripts": {},
   "author": "Matt Fellows <m@onegeek.com.au>",
   "license": "Apache-2.0"
 }

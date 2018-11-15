@@ -8,7 +8,10 @@
     "test:consumer": "./node_modules/.bin/mocha --timeout 100000 consumer/test/consumer.spec.js",
     "test:pact:consumer": "./node_modules/.bin/mocha --timeout 10000 consumer/test/consumerPact.spec.js",
     "test:pact:publish": "node consumer/test/publish.js",
-    "test:pact:provider": "./node_modules/.bin/mocha --timeout 10000 provider/test/providerPact.spec.js"
+    "test:pact:provider": "./node_modules/.bin/mocha --timeout 10000 provider/test/providerPact.spec.js",
+    "can-i-deploy": "npm run can-i-deploy:consumer && npm run can-i-deploy:provider",
+    "can-i-deploy:consumer": "$(find ./node_modules -name pact-broker | grep -e 'bin/pact-broker$' | head -n 1) can-i-deploy --pacticipant 'Matching Service' --latest --broker-base-url https://test.pact.dius.com.au --broker-username dXfltyFMgNOFZAxr8io9wJ37iUpY42M --broker-password O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1",
+    "can-i-deploy:provider": "$(find ./node_modules -name pact-broker | grep -e 'bin/pact-broker$' | head -n 1) can-i-deploy --pacticipant 'Animal Profile Service' --latest --broker-base-url https://test.pact.dius.com.au --broker-username dXfltyFMgNOFZAxr8io9wJ37iUpY42M --broker-password O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1"
   },
   "repository": {
     "type": "git",
@@ -20,22 +23,6 @@
   "homepage": "https://github.com/DiUS/pact-workshop-js#readme",
   "author": "Matt Fellows <m@onegeek.com.au>",
   "license": "Apache-2.0",
-  "standard": {
-    "parser": "babel-eslint",
-    "ignore": [
-      "test/**"
-    ],
-    "global": [
-      "describe",
-      "context",
-      "before",
-      "beforeEach",
-      "after",
-      "afterEach",
-      "it",
-      "expect"
-    ]
-  },
   "engines": {
     "node": ">=4"
   },
@@ -44,12 +31,10 @@
     "chai-as-promised": "^7.1.1",
     "cli-color": "^1.1.0",
     "concurrently": "^3.1.0",
-    "eslint": "^3.13.1",
-    "eslint-config-google": "^0.7.1",
     "mocha": "^3.2.0",
-    "nock": "^9.0.13",
-    "pact": "^2.6.0",
-    "standard": "^10.0.2"
+    "nock": "^10.0.2",
+    "@pact-foundation/pact": "^7.0.2",
+    "@pact-foundation/pact-node": "^6.20.0"
   },
   "dependencies": {
     "body-parser": "^1.16.1",

@@ -506,7 +506,7 @@ Here are the two additional tests:
 
 *consumer/test/consumerPact.spec.js:*
 
-```groovy
+```js
 describe('and an invalid date is provided', () => {
   before(() => {
     return provider.addInteraction({
@@ -1068,8 +1068,15 @@ If something has changed, or it hasn't yet been validated by all downstream prov
 
 Here is a simple cURL that will tell you if it's safe to release Our Little Consumer:
 
+```sh
+curl -s -u dXfltyFMgNOFZAxr8io9wJ37iUpY42M:O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1 "https://test.pact.dius.com.au/verification-results/consumer/Our%20Little%20Consumer/version/1.0.${USER}/latest" | jq .success
 ```
-$ curl -s -u dXfltyFMgNOFZAxr8io9wJ37iUpY42M:O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1 https://test.pact.dius.com.au/verification-results/consumer/Our%20Little%20Consumer/version/1.0.0/latest | jq .success
+
+Or better yet, you case use our [CLI Tools](https://github.com/pact-foundation/pact-ruby-standalone/releases) to do the job, which are bundled as part of Pact JS:
+
+```sh
+npm run can-i-deploy:consumer
+npm run can-i-deploy:provider
 ```
 
 That's it - you're now a Pact pro!

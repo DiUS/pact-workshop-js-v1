@@ -1,8 +1,7 @@
-const verifier = require('pact').Verifier
+const Verifier = require('@pact-foundation/pact').Verifier
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const expect = chai.expect
 chai.use(chaiAsPromised)
 
 const { server, dataStore } = require('../provider.js')
@@ -26,9 +25,7 @@ server.listen(8081, () => {
 
 // Verify that the provider meets all consumer expectations
 describe('Pact Verification', () => {
-  it('should validate the expectations of Our Little Consumer', function () { // lexical binding required here for timeout
-    this.timeout(10000)
-
+  it('should validate the expectations of Our Little Consumer', () => {
     let opts = {
       provider: 'Our Provider',
       providerBaseUrl: 'http://localhost:8081',
@@ -38,13 +35,12 @@ describe('Pact Verification', () => {
       pactBrokerUsername: 'dXfltyFMgNOFZAxr8io9wJ37iUpY42M',
       pactBrokerPassword: 'O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1',
       publishVerificationResult: true,
-      providerVersion: '1.0.0'
+      providerVersion: '1.0.0',
     }
 
-    return verifier.verifyProvider(opts)
-      .then(output => {
-        console.log('Pact Verification Complete!')
-        console.log(output)
-      })
+    return new Verifier().verifyProvider(opts).then(output => {
+      console.log('Pact Verification Complete!')
+      console.log(output)
+    })
   })
 })
