@@ -48,7 +48,7 @@ describe('Pact with Our Provider', () => {
                 validDate: term({
                   generate: date,
                   matcher:
-                    '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}',
+                    '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\+|\\-)\\d{2}:\\d{2}',
                 }),
                 count: like(1000),
               },
