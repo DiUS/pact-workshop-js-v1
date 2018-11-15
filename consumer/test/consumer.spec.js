@@ -21,7 +21,7 @@ describe('Consumer', () => {
         .reply(200, {
           test: 'NO',
           validDate: date,
-          count: 1000
+          count: 1000,
         })
 
       const response = fetchProviderData(new Date().toISOString())

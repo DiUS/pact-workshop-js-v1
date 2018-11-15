@@ -1,33 +1,30 @@
 const chai = require('chai')
 const path = require('path')
 const chaiAsPromised = require('chai-as-promised')
-const pact = require('pact')
+const Pact = require('@pact-foundation/pact').Pact
+const { somethingLike: like, term } = require('@pact-foundation/pact').Matchers
 const expect = chai.expect
 const API_PORT = process.env.API_PORT || 9123
-const {
-  fetchProviderData
-} = require('../client')
+const { fetchProviderData } = require('../client')
 chai.use(chaiAsPromised)
 
 // Configure and import consumer API
 // Note that we update the API endpoint to point at the Mock Service
 const LOG_LEVEL = process.env.LOG_LEVEL || 'WARN'
 
-const provider = pact({
+const provider = new Pact({
   consumer: 'Our Little Consumer',
   provider: 'Our Provider',
   port: API_PORT,
   log: path.resolve(process.cwd(), 'logs', 'pact.log'),
   dir: path.resolve(process.cwd(), 'pacts'),
   logLevel: LOG_LEVEL,
-  spec: 2
+  spec: 2,
 })
 const date = '2013-08-16T15:31:20+10:00'
 const submissionDate = new Date().toISOString()
-const dateRegex = '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\+\\d{2}:\\d{2}'
-
-// Alias flexible matchers for simplicity
-const { somethingLike: like, term } = pact.Matchers
+const dateRegex =
+  '\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\+|\\-)\\d{2}:\\d{2}'
 
 describe('Pact with Our Provider', () => {
   before(() => {
@@ -44,19 +41,19 @@ describe('Pact with Our Provider', () => {
             withRequest: {
               method: 'GET',
               path: '/provider',
-              query: { validDate: submissionDate }
+              query: { validDate: submissionDate },
             },
             willRespondWith: {
               status: 200,
               headers: {
-                'Content-Type': 'application/json; charset=utf-8'
+                'Content-Type': 'application/json; charset=utf-8',
               },
               body: {
                 test: 'NO',
                 validDate: term({ generate: date, matcher: dateRegex }),
-                count: like(1000)
-              }
-            }
+                count: like(1000),
+              },
+            },
           })
         })
 
@@ -64,7 +61,9 @@ describe('Pact with Our Provider', () => {
           const response = fetchProviderData(submissionDate)
 
           expect(response).to.eventually.have.property('count', 100)
-          expect(response).to.eventually.have.property('date', date).notify(done)
+          expect(response)
+            .to.eventually.have.property('date')
+            .notify(done)
         })
 
         it('should validate the interactions and create a contract', () => {
@@ -81,21 +80,23 @@ describe('Pact with Our Provider', () => {
               method: 'GET',
               path: '/provider',
               query: {
-                validDate: 'This is not a date'
-              }
+                validDate: 'This is not a date',
+              },
             },
             willRespondWith: {
               status: 400,
               headers: {
-                'Content-Type': 'application/json; charset=utf-8'
+                'Content-Type': 'application/json; charset=utf-8',
               },
-              body: { 'error': '\'This is not a date\' is not a date' }
-            }
+              body: { error: "'This is not a date' is not a date" },
+            },
           })
         })
 
-        it('can handle an invalid date parameter', (done) => {
-          expect(fetchProviderData('This is not a date')).to.eventually.be.rejectedWith(Error).notify(done)
+        it('can handle an invalid date parameter', done => {
+          expect(fetchProviderData('This is not a date'))
+            .to.eventually.be.rejectedWith(Error)
+            .notify(done)
         })
 
         it('should validate the interactions and create a contract', () => {
@@ -115,15 +116,17 @@ describe('Pact with Our Provider', () => {
             willRespondWith: {
               status: 400,
               headers: {
-                'Content-Type': 'application/json; charset=utf-8'
+                'Content-Type': 'application/json; charset=utf-8',
               },
-              body: { 'error': 'validDate is required' }
-            }
+              body: { error: 'validDate is required' },
+            },
           })
         })
 
-        it('can handle missing date parameter', (done) => {
-          expect(fetchProviderData(null)).to.eventually.be.rejectedWith(Error).notify(done)
+        it('can handle missing date parameter', done => {
+          expect(fetchProviderData(null))
+            .to.eventually.be.rejectedWith(Error)
+            .notify(done)
         })
 
         it('should validate the interactions and create a contract', () => {
@@ -143,19 +146,21 @@ describe('Pact with Our Provider', () => {
             withRequest: {
               method: 'GET',
               path: '/provider',
-              query: { validDate: submissionDate }
+              query: { validDate: submissionDate },
             },
             willRespondWith: {
               status: 404,
               headers: {
-                'Content-Type': 'application/json; charset=utf-8'
-              }
-            }
+                'Content-Type': 'application/json; charset=utf-8',
+              },
+            },
           })
         })
 
-        it('can handle missing data', (done) => {
-          expect(fetchProviderData(submissionDate)).to.eventually.be.rejectedWith(Error).notify(done)
+        it('can handle missing data', done => {
+          expect(fetchProviderData(submissionDate))
+            .to.eventually.be.rejectedWith(Error)
+            .notify(done)
         })
 
         it('should validate the interactions and create a contract', () => {
