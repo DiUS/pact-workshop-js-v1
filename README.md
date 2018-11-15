@@ -1072,7 +1072,7 @@ Here is a simple cURL that will tell you if it's safe to release Our Little Cons
 curl -s -u dXfltyFMgNOFZAxr8io9wJ37iUpY42M:O5AIZWxelWbLvqMd8PkAVycBJh2Psyg1 "https://test.pact.dius.com.au/verification-results/consumer/Our%20Little%20Consumer/version/1.0.${USER}/latest" | jq .success
 ```
 
-Or better yet, you case use our [CLI Tools](https://github.com/pact-foundation/pact-ruby-standalone/releases) to do the job, which are bundled as part of Pact JS:
+Or better yet, you can use our [CLI Tools](https://github.com/pact-foundation/pact-ruby-standalone/releases) to do the job, which are bundled as part of Pact JS:
 
 ```sh
 npm run can-i-deploy:consumer
