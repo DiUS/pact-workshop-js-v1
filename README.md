@@ -506,7 +506,7 @@ Here are the two additional tests:
 
 *consumer/test/consumerPact.spec.js:*
 
-```groovy
+```js
 describe('and an invalid date is provided', () => {
   before(() => {
     return provider.addInteraction({
