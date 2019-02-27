@@ -2,6 +2,8 @@
 
 This project has 2 components, a consumer project and a service provider as an Express API.
 
+_NOTE: Each step is tied to, and must be run within, a git branch, allowing you to progress through each stage incrementally. For example, to move to step 2 run the following: `git checkout step2`_
+
 ## Step 1 - Simple Consumer calling Provider
 
 Given we have a client that needs to make a HTTP GET request to a provider service, and requires a response in JSON format.
@@ -10,32 +12,30 @@ Given we have a client that needs to make a HTTP GET request to a provider servi
 
 The consumer client is quite simple and looks like this
 
-*consumer/consumer.js:*
+_consumer/consumer.js:_
 
 ```js
 request
   .get(`${API_ENDPOINT}/provider`)
-  .query({validDate: new Date().toISOString()})
-  .then((res) => {
+  .query({ validDate: new Date().toISOString() })
+  .then(res => {
     console.log(res.body)
   })
 ```
 
 and the express provider resource
 
-*provider/provider.js:*
+_provider/provider.js:_
 
 ```js
 server.get('/provider/:', (req, res) => {
   const date = req.query.validDate
 
-  res.json(
-    {
-      'test': 'NO',
-      'validDate': new Date().toISOString(),
-      'count': 100
-    }
-  )
+  res.json({
+    test: 'NO',
+    validDate: new Date().toISOString(),
+    count: 100,
+  })
 })
 ```
 
