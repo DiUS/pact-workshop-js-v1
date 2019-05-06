@@ -46,7 +46,7 @@ This providers expects a `validDate` parameter in HTTP date format, and then ret
 Start the provider in a separate terminal:
 
 ```
-$ node provider/provider.js
+$ node provider/providerService.js
 Provider Service listening on http://localhost:9123
 ```
 
