@@ -1,3 +1,5 @@
+**NOTE**: This project is superceded by https://github.com/pact-foundation/pact-workshop-js
+
 # Example JS project for the Pact workshop
 
 This project has 2 components, a consumer project and a service provider as an Express API.
